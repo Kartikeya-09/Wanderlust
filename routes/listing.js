@@ -32,7 +32,7 @@ router.route("/")
 //Show route
 //Update route
 //Delete route
-router.route("/id")
+router.route("/:id")
 .get(wrapAsync(listingController.showListing))
 .put(isLoggedIn,
     isOwner,

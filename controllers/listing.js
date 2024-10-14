@@ -1,7 +1,7 @@
 const Listing = require("../models/listing");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/tilesets');
 const mapToken= process.env.MAP_TOKEN;
-const geocodingClinet = mbxGeocoding({ accessToken: mapToken });
+const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
 module.exports.index =async (req,res)=>{
     const allListings=await Listing.find({});
@@ -31,9 +31,9 @@ module.exports.showListing= async(req,res)=>{
 
 module.exports.createListing = async(req,res,next)=>{
     
-    let response = await geocodingClinet.forwardGeocode({ //geocode convert place name to cordinates
-        query:req.body.listing.location, // for our location
-        limit: 1
+    let response = await geocodingClient.forwardGeocode({ //geocode convert place name to cordinates
+        query: req.body.listing.location, // for our location
+        limit: 1,
     })
     .send();
 
@@ -41,18 +41,19 @@ module.exports.createListing = async(req,res,next)=>{
     
     let url=req.file.path;
     let filename= req.file.filename;
-    // let newListing= new Listing(req.body.listing);
+    const newListing= new Listing(req.body.listing);
     
 
-    let {title, description, image , price, location , country}= req.body;
-    let newListing = new Listing({
-        title: title,
-        description: description,
-        image:image,
-        price:price,
-        location: location,
-        country: country,
-    });
+    // let {title, description, image , price, location , country}= req.body;
+    // let newListing = new Listing({
+    //     title: title,
+    //     description: description,
+    //     image:image,
+    //     price:price,
+    //     location: location,
+    //     country: country,
+    // });
+    
     newListing.owner = req.user._id;
     newListing.image={url,filename};//for upload image
     newListing.geometry= response.body.features[0].geometry; // this came from mapBox to store in DB
@@ -72,7 +73,7 @@ module.exports.editForm=async(req,res)=>{
          }
 
          let orignalImageUrl=listing.image.url;
-        orignalImageUrl= orignalImageUrl.replace("/upload","/upload/w_250"); //with help of cloduniary api
+        orignalImageUrl= orignalImageUrl.replace("/upload","/upload/w_250/h_150"); //with help of cloduniary api
 
     res.render("listings/edit.ejs",{listing,orignalImageUrl});
     };
