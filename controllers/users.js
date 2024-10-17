@@ -14,7 +14,7 @@ module.exports.signUp=async(req,res)=>{
         if(err){
           return next(err);
         }
-        req.flash("success","Welcome to Wandelust");
+        req.flash("success","Welcome to Wandelust ");
         res.redirect("/listings");
       });
   
