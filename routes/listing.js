@@ -54,4 +54,8 @@ isLoggedIn,
 isOwner,
  wrapAsync(listingController.editForm));
 
+//filter route
+router.get("/trending",wrapAsync(listingController.filterListing));
+
+
 module.exports = router;

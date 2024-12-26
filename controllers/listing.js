@@ -13,6 +13,8 @@ module.exports.index =async (req,res)=>{
     return res.render("listings/new.ejs");
 };
 
+
+
 module.exports.showListing= async(req,res)=>{
     let {id} = req.params;
     const listing =await Listing.findById(id)
@@ -23,26 +25,19 @@ module.exports.showListing= async(req,res)=>{
     .populate("Owner");//Populate to show somethig..
     if(!listing){
    req.flash("error","Listing You request for does not exist");
+   
    return res.redirect("/listings");
     }
    return res.render("listings/show.ejs",{listing});
+
 };
 
 
 module.exports.createListing = async(req,res,next)=>{
-    
-  
-    // const newListing= new Listing(req.body.listing);
 
-     let {title, description, image , price, location , country}= req.body;
-    let newListing = new Listing({
-        title: title,
-        description: description,
-        image:image,
-        price:price,
-        location: location,
-        country: country,
-    });
+     const newListing= new Listing(req.body.listing);
+
+     //map
     let response = await geocodingClient.forwardGeocode({ //geocode convert place name to cordinates
         query: newListing.location, // for our location
         limit: 1,
@@ -57,9 +52,11 @@ module.exports.createListing = async(req,res,next)=>{
     newListing.image={url,filename};//for upload image
     newListing.geometry= response.body.features[0].geometry; // this came from mapBox to store in DB
     
-    await newListing.save()
+    await newListing.save();
+    
     req.flash("success","New Listing Created");
-    return res.redirect("/listings");
+    
+     return res.redirect("/listings");
 };
 
 
@@ -80,18 +77,36 @@ module.exports.editForm=async(req,res)=>{
 module.exports.updateListing=async (req,res)=>{
     let {id} = req.params;
    let listing= await Listing.findByIdAndUpdate(id, {...req.body.listing});
-   // edit image logic 
+   let location= req.body.listing.location;
+   // edit image and map logic
+   
    if(typeof req.file!="undefined"){//to check filename is not empty
    let url=req.file.path;
    let filename= req.file.filename;
 
    listing.image={url,filename};
-   await listing.save() ;
+   
+   let response = await geocodingClient.forwardGeocode({ //geocode convert place name to cordinates
+    query: location,// for our location
+    limit: 1,
+    })
+    .send(); 
+    listing.geometry= response.body.features[0].geometry;
+    await listing.save();
+
    }
+    
     req.flash("success","Listing Updated");
     
     return res.redirect(`/listings/${id}`);
+    
     };
+
+    module.exports.filterListing=async(req,res)=>{
+        let filter=req.body.listing.category;
+        console.log(filter);
+        // return res.redirect("/listings");
+    }
 
 module.exports.destroyListing=async (req,res)=>{
     let {id} = req.params;

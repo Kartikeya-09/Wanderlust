@@ -8,7 +8,7 @@ module.exports.isLoggedIn=(req,res,next)=>{
     if(!req.isAuthenticated()){
         //redirect URL save
         req.session.redirecturl=req.originalUrl;
-        req.flash("error","you must be logged in to create listing!");
+        req.flash("error","You must be logged in to create listing!");
         res.redirect("/login");
     }
     next();
@@ -51,9 +51,9 @@ next();
 }
 
 
-// //Validate Review
+//Validate Review
 
-// module.exports.validateReviews=(req,res,next)=>{
+// module.exports.validateReview=(req,res,next)=>{
 // const validateReview=(req,res,next)=>{
 //     let {error}= reviewSchema.validate(req.body);
 //     if(error){
@@ -65,6 +65,8 @@ next();
 // };
 // next();
 // }
+
+
 
 //  check for an erron in authon project b last phase.. 
 module.exports.isReviewAuthor=async (req,res,next) =>{

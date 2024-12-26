@@ -5,7 +5,7 @@ const ExpressError=require("../utills/ExpressError.js");
 const {reviewSchema}= require("../schema.js");
 const Review = require("../models/review.js");
 const Listing = require("../models/listing.js");
-const { isLoggedIn, isReviewAuthor } = require("../middleware.js");
+const { isLoggedIn, isReviewAuthor} = require("../middleware.js");
 
 
 const reviewController=require("../controllers/reviews.js");
