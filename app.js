@@ -41,8 +41,9 @@ async function main(){
     await mongoose.connect(dbUrl);
 }
 
-app.set("view engine","ejs");
 app.set("views",path.join(__dirname,"views"));
+app.set("view engine","ejs");
+
 
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
@@ -111,7 +112,7 @@ app.use ("/", userRouter);
 app.use("/listings/category",categoryRouter);
 
 app.all("*",(req,res,next)=>{
-next (new ExpressError(404,"Fuck You!"));
+next (new ExpressError(404,"Page Not found."));
 });
 
 app.use((err,req,res,next)=>{
