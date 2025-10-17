@@ -2,7 +2,7 @@
 const User=require("../models/user");
 
 module.exports.renderSignUpform=(req,res)=>{
-    res.render("Users/signup.ejs");
+    res.render("users/signup.ejs");
 };
 
 module.exports.signUp=async(req,res)=>{
